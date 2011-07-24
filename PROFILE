@@ -1,0 +1,28 @@
+--- 
+title  : Citron
+suite  : RubyWorks
+summary: Classic Unit-style Test Framework
+authors:
+  - Thomas Sawyer <transfire@gmail.com>
+
+description:
+  Citron is a unit testing framework with a classic
+  test-case/test-unit style.
+
+resources:
+  home: http://rubyworks.github.com/citron
+  code: http://github.com/rubyworks/citron
+
+repositories:
+  origin: git://github.com/proutils/citron.git
+
+copyright: Copyright 2011 Thomas Sawyer
+license: BSD-2-Clause
+
+requirements:
+  - test
+  - ae
+  - detroit  (build)
+  - reap     (build)
+  - qed      (test)
+
