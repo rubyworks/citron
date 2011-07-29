@@ -72,7 +72,7 @@ module Citron
     end
 
     #
-    alias :subtext, :setup
+    alias :subtext :setup
 
     #
     def scope
