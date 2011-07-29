@@ -14,7 +14,7 @@ resources:
   code: http://github.com/rubyworks/citron
 
 repositories:
-  origin: git://github.com/proutils/citron.git
+  upstream: git://github.com/proutils/citron.git
 
 copyright: Copyright 2011 Thomas Sawyer
 license: BSD-2-Clause
