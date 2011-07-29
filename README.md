@@ -1,14 +1,15 @@
 # Citron
 
-Author: Thomas Sawyer
-License: FreeBSD
-Copyright: (c) 2011 Thomas Sawyer, Rubyworks
-
+<table>
+<tr><td><b>Author   </b></td><td>Thomas Sawyer</td></tr>
+<tr><td><b>License  </b></td><td>FreeBSD</td></tr>
+<tr><td><b>Copyright</b></td><td>(c) 2011 Thomas Sawyer, Rubyworks</td></tr>
+</table>
 
 ## Description
 
 Citron is a classic unit test framework. It defines a simple
-domain language for create class-style tests.
+domain language for create classic-style tests.
 
 ## Example
 
