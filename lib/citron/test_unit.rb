@@ -22,7 +22,7 @@ module Citron
     attr :context
 
     #
-    alias :parent, :context
+    alias :parent :context
 
     # Setup and teardown procedures.
     attr :setup
