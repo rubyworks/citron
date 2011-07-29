@@ -32,41 +32,27 @@ module Citron
     # A test case +target+ is a class or module.
     #
     # @param [TestSuite] context
-    #   The test suite or parent case to which this
-    #   case belongs.
+    #   The parent case to which this case belongs.
     #
-    # @param [Class,Module] target
-    #   A description of the test-case's purpose.
-    #
-    def initialize(parent, settings={}, &block)
-      if parent
-        @parent = parent
-        @advice = parent.advice.clone
+    def initialize(context, settings={}, &block)
+      if context
+        @context = context
+        @advice  = context.advice.clone
       else
-        @parent = nil
-        @advice = TestAdvice.new
+        @context = nil
+        @advice  = TestAdvice.new
       end
 
-      @label   = settings[:label]
-      @setup   = settings[:setup]
-
-      @scope   = Module.new
-
-      if parent
-        @scope.extend(parent.scope)
-      end
+      @label = settings[:label]
+      @setup = settings[:setup]
 
       @tests   = []
 
       # TODO: Don't really like this here, but how else to do it?
       $TEST_SUITE << self
 
-      domain_eval(&block)
-    end
-
-    #
-    def domain_eval(&block)
-      domain = self.class.const_get(:DSL).new(self, &block)
+      domain = DSL.new(self, &block)
+      @scope = Module.new
       @scope.extend domain
     end
 
@@ -148,13 +134,17 @@ module Citron
         @_case  = testcase
         @_setup = testcase.setup
 
+        if testcase.context
+          extend(testcase.context.scope)
+        end
+
         module_eval(&code)
       end
 
       # Create a sub-case.
       #--
       # @TODO: Instead of resuing TestCase can we have a TestContext
-      #        that more generically mimics it's parent context?
+      #        that more generically mimics it's context context?
       #++
       def Context(label, &block)
         settings = {
