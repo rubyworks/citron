@@ -1,32 +1,31 @@
 module Citron
 
-  # Test Subject - Setup and Teardown code.
+  # Test Setup/Concern - Setup and Teardown code.
   class TestSetup
 
     # The test case to which this advice belong.
     attr :context
 
-    # The description of this concern. Make this
-    # as detailed as you wish.
-    attr :description
+    # A brief description of this concern.
+    attr :label
 
+    # The setup procedure.
     attr :setup
 
+    # The teardown procedure.
     attr :teardown
 
     # New case instance.
     def initialize(context, label, options={}, &setup)
       @context   = context
       @label     = label.to_s
-      #@function = options[:function] || options[:singleton]
-      #@type     = options[:type] || :context
       @setup     = [setup].flatten
       @teardown  = []
     end
 
     #
     def teardown=(procedure)
-       @teardown = [procedure]
+      @teardown = [procedure]
     end
 
     # Setup.
