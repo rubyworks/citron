@@ -12,7 +12,7 @@ module Test
 
   # Define a general test case.
   def Case(label, &block)
-    Citron::TestCase.new(nil, :label=>label, &block)
+    $TEST_SUITE << Citron::TestCase.new(nil, :label=>label, &block)
   end
 
   alias :TestCase  :Case

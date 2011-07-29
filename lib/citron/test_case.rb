@@ -45,11 +45,9 @@ module Citron
 
       @label = settings[:label]
       @setup = settings[:setup]
+      @skip  = settings[:skip]
 
       @tests   = []
-
-      # TODO: Don't really like this here, but how else to do it?
-      $TEST_SUITE << self
 
       domain = DSL.new(self, &block)
       @scope = Module.new
@@ -83,13 +81,13 @@ module Citron
     end
 
     #
-    def omit?
-      @omit
+    def skip?
+      @skip
     end
 
     #
-    def omit=(boolean)
-      @omit = boolean
+    def skip=(boolean)
+      @skip = !!boolean
     end
 
     # Run test in the context of this case.
