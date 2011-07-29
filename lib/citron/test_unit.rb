@@ -14,9 +14,6 @@ module Citron
 
       @procedure = procedure
       @tested    = false
-
-      # TODO: Don't really like this here, but how else to do it?
-      $TEST_SUITE << self
     end
 
   public
