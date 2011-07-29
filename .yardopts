@@ -1,0 +1,7 @@
+--output-dir site
+--protected
+--readme README.md
+lib
+-
+[A-Z]*.*
+

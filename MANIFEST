@@ -1,0 +1,12 @@
+#!mast .ruby .yaropts bin lib spec test [A-Z][A-Z]*
+.ruby
+lib/citron/test_advice.rb
+lib/citron/test_case.rb
+lib/citron/test_setup.rb
+lib/citron/test_unit.rb
+lib/citron.rb
+PROFILE
+LICENSE.txt
+README.md
+VERSION
+COPYING.rdoc

@@ -1,4 +1,5 @@
 --- 
+name   : citron
 title  : Citron
 suite  : RubyWorks
 summary: Classic Unit-style Test Framework
@@ -16,8 +17,8 @@ resources:
 repositories:
   upstream: git://github.com/proutils/citron.git
 
-copyright: Copyright 2011 Thomas Sawyer
-license: BSD-2-Clause
+copyrights:
+  - 2011 Thomas Sawyer (BSD-2-Clause)
 
 requirements:
   - test
