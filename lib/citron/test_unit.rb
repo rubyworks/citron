@@ -5,12 +5,12 @@ module Citron
 
     # New unit test procedure.
     #
-    def initialize(parent, options={}, &procedure)
-      @parent    = parent
+    def initialize(context, options={}, &procedure)
+      @context    = context
 
       @setup     = options[:setup]
       @label     = options[:label]
-      @omit      = options[:omit]
+      @skip      = options[:skip]
 
       @procedure = procedure
       @tested    = false
@@ -19,7 +19,10 @@ module Citron
   public
 
     # The parent testcase to which this test belongs.
-    attr :parent
+    attr :context
+
+    #
+    alias :parent, :context
 
     # Setup and teardown procedures.
     attr :setup
@@ -30,24 +33,22 @@ module Citron
     # Test procedure, in which test assertions should be made.
     attr :procedure
 
-    #
-    #def target
-    #  context.target
-    #end
-
     # The before and after advice from the context.
     def advice
-      parent.advice
+      context.advice
     end
 
     #
-    def omit?
-      @omit
+    def type
+      'Unit'
     end
 
     #
-    def omit=(boolean)
-      @omit = boolean
+    def skip? ; @skip ; end
+
+    #
+    def skip=(boolean)
+      @skip = !!boolean
     end
 
     #
@@ -55,36 +56,47 @@ module Citron
       @tested
     end
 
+    #
     def tested=(boolean)
-      @tested = true
+      @tested = boolean
     end
 
+    #
     def to_s
       label.to_s
     end
 
-def subject
-  @setup
-end
-
-    def scope
-      parent.scope
+    #
+    def setup
+      @setup
     end
 
     #
-    #def description
-    #  if function?
-    #    #"#{test_case} .#{target} #{aspect}"
-    #    "#{test_case}.#{target} #{context} #{aspect}".strip
-    #  else
-    #    a  = /^[aeiou]/i =~ test_case.to_s ? 'An' : 'A'
-    #    #"#{a} #{test_case} receiving ##{target} #{aspect}"
-    #    "#{test_case}##{target} #{context} #{aspect}".strip
-    #  end
-    #end
+    alias :subtext, :setup
 
+    #
+    def scope
+      context.scope
+    end
+
+    #
     def arguments
-      []
+      @arguments
+    end
+
+    #
+    def arguments=(args)
+      @arguments = args
+    end
+
+    # TODO: how to handle negated tests?
+    def negate
+      @negate
+    end
+
+    #
+    def negate=(boolean)
+      @negate = !!boolean
     end
 
     #
@@ -99,7 +111,7 @@ end
 
     #
     def call
-      parent.run(self) do
+      context.run(self) do
         setup.run_setup(scope)    if setup
         scope.instance_exec(*arguments, &procedure)
         setup.run_teardown(scope) if setup
