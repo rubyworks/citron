@@ -1,13 +1,12 @@
 module Citron
 
   #
-  class TestUnit
+  class TestProc
 
     # New unit test procedure.
     #
-    def initialize(context, options={}, &procedure)
-      @context    = context
-
+    def initialize(options={}, &procedure)
+      @context   = options[:context]
       @setup     = options[:setup]
       @label     = options[:label]
       @skip      = options[:skip]
@@ -40,15 +39,15 @@ module Citron
 
     #
     def type
-      'Unit'
+      'Test'
     end
 
     #
     def skip? ; @skip ; end
 
     #
-    def skip=(boolean)
-      @skip = !!boolean
+    def skip=(reason)
+      @skip = reason
     end
 
     #
@@ -58,7 +57,7 @@ module Citron
 
     #
     def tested=(boolean)
-      @tested = boolean
+      @tested = !!boolean
     end
 
     #
@@ -71,8 +70,10 @@ module Citron
       @setup
     end
 
-    #
-    alias :subtext :setup
+    # Ruby Test looks for `topic` as the desciption of a test's setup.
+    def topic
+      @setup.to_s
+    end
 
     #
     def scope
