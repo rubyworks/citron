@@ -1,0 +1,147 @@
+<html> 
+<head> 
+  <title>Citron</title> 
+  <link href="assets/styles/reset.css" rel="stylesheet" type="text/css"/> 
+  <link href="assets/styles/site.css"  rel="stylesheet" type="text/css"/> 
+  <link href="assets/images/citron.jpg" rel="shortcut icon"/> 
+ 
+  <!-- syntax highlighing --> 
+  <script src="http://rubyworks.github.com/assets/includes/shjs/sh_main.min.js"></script> 
+  <script src="http://rubyworks.github.com/assets/includes/shjs/lang/sh_ruby.min.js"></script> 
+  <script src="http://rubyworks.github.com/assets/includes/shjs/lang/sh_sh.min.js"></script> 
+  <link  href="http://rubyworks.github.com/assets/includes/shjs/css/sh_acid.min.css" rel="stylesheet" type="text/css" /> 
+</head> 
+<body onload="sh_highlightDocument();"> 
+ 
+<div id="forkme"> 
+  <a href="http://github.com/rubyworks/citron"><img src="assets/images/forkme.png" /></a> 
+</div> 
+ 
+<div id="header"> 
+<div class="page"> 
+  <img src="assets/images/cut-citron.png" height="200px" align="right" style="padding-top: 15px;"/> 
+  <h1><img src="assets/images/title.png"/></h1> 
+  <h2>Clean Classic Testing</h2> 
+</div> 
+</div> 
+ 
+<div id="main" class="bordered"> 
+<div class="page"> 
+ 
+  <p>Citron is classic unit testing framework with a clear domain specific language
+  notating testcase and test procedure, that runs on top of the Ruby Universal Test
+  Harness, <a href="http://rubyworks.github.com/test">Ruby Test</a>.</p> 
+ 
+<!--
+  <p>Citron uses the <a href="http://rubyworks.github.com/ae">Assertive Expressive</a>
+  assertions framework. This is the same verstile framework used by <a href="http://rubyworks.github.com/qed">Q.E.D.</a>.
+  By default Citron test support the standard <code>#assert</code> and <code>#expect</code> assertion methods.
+  If you wish to use subjunctive terms, either <code>#should</code> or <code>#must</code>, you can load these
+  via a helper script (eg. <code>require 'ae/should'</code>).</p>
+--> 
+ 
+</div> 
+</div> 
+ 
+<div id="example"> 
+<div class="page"> 
+
+  <div id="nav"> 
+    <!-- <a href="guide/doc.en/index.html">English Manual</a> &nbsp;&middot;&nbsp; --> 
+    <a href="http://wiki.github.com/rubyworks/citron">Wiki</a> &nbsp;
+    <a href="http://rubydoc.info/gems/citron/frames">API</a> &nbsp;
+    <a href="http://googlegroups.com/group/rubyworks-mailinglist">Email</a> &nbsp;
+    <a href="http://github.com/rubyworks/citron/issues">Issue</a> &nbsp;
+    <a href="http://github.com/rubyworks/citron">Code</a> 
+  </div> 
+
+  <h3>Example</h3> 
+ 
+  <p>Citron tests are organized into test cases and test procedures.
+  Here is an example:</p> 
+ 
+<pre class="sh_ruby">
+  TestCase "Show them how to Beat It" do
+
+    # will fail
+    test "show them how to funky" do
+      "funky".assert != "funky"
+    end
+
+    # will pass
+    test "show them what's right" do
+      "right".assert == "right"
+    end
+
+    # will error
+    test "no one wants to be defeated" do
+      raise SyntaxError
+    end
+
+    # pending
+    test "better do what you can" do
+      raise NotImplementedError
+    end
+
+    # omit
+    test "just beat it" do
+      e = NotImplementedError.new
+      e.set_assertion(true)
+      raise e
+    end
+
+  end
+</pre> 
+ 
+  <p>The assertion framework is actually independent of the test framework,
+  so almost any assertion system will work. In the example above we are using
+  <a href="http://rubyworks.github.com/ae">A.E.</a></p> 
+ 
+</div> 
+</div> 
+ 
+<div id="footer" class="bordered"> 
+<div class="page"> 
+  <script type="text/javascript"><!--
+  google_ad_client = "ca-pub-1126154564663472";
+  /* RUBYWORKS 09-10-02 728x90 */
+  google_ad_slot = "0788888658";
+  google_ad_width = 728;
+  google_ad_height = 90;
+  //-->
+  </script> 
+  <script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> 
+  </script> 
+ 
+  <br/><br/><br/> 
+ 
+  <div class="copyright" width="100%"> 
+    <a href="http://rubyworks.github.com/"> 
+      <img src="assets/images/ruby-logo.png" height="110px" align="left" style="margin: 0 5px; padding: 0 10px" /> 
+    </a> 
+    <a href="http://www.apache.org/licenses/LICENSE-2.0.html"> 
+      <img src="assets/images/opensource.png" height="120px" align="left" style="padding: 0 10px;" /> 
+    </a> 
+    <a href="github.com/rubyworks/citron"> 
+      <img src="assets/images/github-logo.png" height="115px" align="left" style="margin: 0; padding: 0 10px;" /> 
+    </a> 
+    <a href="http://testanything.org/wiki/index.php/Main_Page"> 
+      <img src="assets/images/tap.png" height="113px" align="left" style="margin: 0; padding: 0 20px;" /> 
+    </a> 
+    <a href=""> 
+      <img src="assets/images/citrons-are-good.png" height="117px" align="left" style="margin: 0; padding: 0 10px;" /> 
+    </a> 
+  </div> 
+ 
+  <br style="clear: both;" /> 
+ 
+  <div style="margin-top: 30px;"> 
+      <b>Citron</b>, Copyright &copy; 2009 Thomas Sawyer &middot;
+      <b>Contact:</b> transfire @ gmail.com
+  </div> 
+</div> 
+</div> 
+ 
+</body> 
+</html>
