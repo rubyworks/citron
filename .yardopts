@@ -1,7 +1,6 @@
---output-dir site
+--output-dir doc
 --protected
 --readme README.md
--M redcarpet
 lib
 -
 [A-Z]*.*

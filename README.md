@@ -15,38 +15,36 @@ domain language for create classic-style tests.
 
 Here's a fun example.
 
-``` ruby
-TestCase "Show them how to Beat It" do
+    TestCase "Show them how to Beat It" do
 
-  # fail
-  test "show them how to funky" do
-    "funky".assert != "funky"
-  end
+      # fail
+      test "show them how to funky" do
+        "funky".assert != "funky"
+      end
 
-  # pass
-  test "show them what's right" do
-    "right".assert == "right"
-  end
+      # pass
+      test "show them what's right" do
+        "right".assert == "right"
+      end
 
-  # error
-  test "no one wants to be defeated" do
-    raise SyntaxError
-  end
+      # error
+      test "no one wants to be defeated" do
+        raise SyntaxError
+      end
 
-  # todo
-  test "better do what you can" do
-    raise NotImplementedError
-  end
+      # todo
+      test "better do what you can" do
+        raise NotImplementedError
+      end
 
-  # omit
-  test "just beat it" do
-    e = NotImplementedError.new
-    e.set_assertion(true)
-    raise e
-  end
+      # omit
+      test "just beat it" do
+        e = NotImplementedError.new
+        e.set_assertion(true)
+        raise e
+      end
 
-end
-```
+    end
 
 ## License
 
