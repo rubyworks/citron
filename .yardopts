@@ -1,6 +1,6 @@
 --output-dir doc
 --protected
---readme README.md
+--readme README.rdoc
 lib
 -
 [A-Z]*.*
