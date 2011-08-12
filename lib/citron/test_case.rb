@@ -2,6 +2,8 @@
 #require 'citron/test_context'
 require 'citron/test_advice'
 require 'citron/test_setup'
+require 'citron/test_proc'
+require 'citron/world'
 
 module Citron
 
@@ -22,8 +24,7 @@ module Citron
     # The setup and teardown advice.
     attr :setup
 
-    # Advice are labeled procedures, such as before
-    # and after advice.
+    # Pattern mathing before and after advice.
     attr :advice
 
     # Module for evaluating tests.
@@ -31,27 +32,23 @@ module Citron
 
     # A test case +target+ is a class or module.
     #
-    # @param [TestSuite] context
-    #   The parent case to which this case belongs.
-    #
-    def initialize(context, settings={}, &block)
-      if context
-        @context = context
-        @advice  = context.advice.clone
+    def initialize(settings={}, &block)
+      @context = settings[:context]
+      @label   = settings[:label]
+      @setup   = settings[:setup]
+      @skip    = settings[:skip]
+
+      if @context
+        @advice = context.advice.clone
       else
-        @context = nil
-        @advice  = TestAdvice.new
+        @advice = TestAdvice.new
       end
 
-      @label = settings[:label]
-      @setup = settings[:setup]
-      @skip  = settings[:skip]
+      @tests = []
 
-      @tests   = []
+      @scope = Scope.new(self)
 
-      domain = DSL.new(self, &block)
-      @scope = Module.new
-      @scope.extend domain
+      @scope.module_eval(&block) if block
     end
 
     #
@@ -77,7 +74,7 @@ module Citron
 
     #
     def to_s
-      "#{type}: " + @label.to_s
+      label.to_s
     end
 
     #
@@ -86,8 +83,8 @@ module Citron
     end
 
     #
-    def skip=(boolean)
-      @skip = !!boolean
+    def skip=(reason)
+      @skip = reason
     end
 
     # Run test in the context of this case.
@@ -112,56 +109,48 @@ module Citron
     end
 
     #
-    #--
-    # TODO: Change so that the scope is the DSL
-    #       and ** includes the DSL of the context ** !!!
-    #++
-    #def scope
-    #  @scope ||= (
-    #    scope = Object.new
-    #    scope.extend(domain)
-    #    scope
-    #  )
-    #end
+    class Scope < World
 
-    #
-    class DSL < Module
-
-      #
-      def initialize(testcase, &code)
+      # Setup new evaluation scope.
+      def initialize(testcase) #, &code)
         @_case  = testcase
         @_setup = testcase.setup
+        @_skip  = false
 
         if testcase.context
           extend(testcase.context.scope)
         end
-
-        module_eval(&code)
       end
 
-      # Create a sub-case.
       #--
-      # @TODO: Instead of resuing TestCase can we have a TestContext
-      #        that more generically mimics it's context context?
+      # TODO: Instead of reusing TestCase can we have a TestContext
+      #       that more generically mimics it's context context?
       #++
+
+      # Create a sub-case.
       def Context(label, &block)
         settings = {
-          :label => label,
-          :setup => @_setup
+          :context => @_case,
+          :setup   => @_setup,
+          :skip    => @_skip,
+          :label   => label
         }
-        testcase = TestCase.new(@_case, settings, &block)
+        testcase = TestCase.new(settings, &block)
         @_case.tests << testcase
         testcase
       end
-      alias_method :context, :Context
+
+      alias :context :Context
 
       # Create a test.
       def Test(label=nil, &procedure)
         settings = {
-          :label => label,
-          :setup => @_setup
+          :context => @_case,
+          :setup   => @_setup,
+          :skip    => @_skip,
+          :label   => label
         }
-        testunit = TestUnit.new(@_case, settings, &procedure)
+        testunit = TestProc.new(settings, &procedure)
         if procedure.arity == 0
           @_case.tests << testunit
         else
@@ -169,9 +158,9 @@ module Citron
         end
         testunit
       end
-      alias_method :test, :Test
 
-      #
+      alias :test :Test
+
       #
       #
       def Ok(*args)
@@ -182,7 +171,8 @@ module Citron
         return test
       end
 
-      #
+      alias :ok :Ok
+
       #
       #
       def No(*args)
@@ -194,33 +184,30 @@ module Citron
         return test
       end
 
+      alias :no :No
+
       # Setup is used to set things up for each unit test.
       # The setup procedure is run before each unit.
       #
-      # @param [String] description
+      # @param [String] label
       #   A brief description of what the setup procedure sets-up.
       #
-      def Setup(description=nil, &procedure)
-        if procedure
-          @_setup = TestSetup.new(@_case, description, &procedure)
-        end
+      def Setup(label=nil, &proc)
+        @_setup = TestSetup.new(@_case, label, &proc)
       end
 
-      alias_method :setup, :Setup
+      alias :setup :Setup
 
       #alias_method :Concern, :Setup
       #alias_method :concern, :Setup
 
-      #alias_method :Subject, :Setup
-      #alias_method :subject, :Setup
-
       # Teardown procedure is used to clean-up after each unit test.
       #
-      def Teardown(&procedure)
-        @_setup.teardown = procedure
+      def Teardown(&proc)
+        @_setup.teardown = proc
       end
 
-      alias_method :teardown, :Teardown
+      alias :teardown :Teardown
 
       # Define a _complex_ before procedure. The #before method allows
       # before procedures to be defined that are triggered by a match
@@ -251,7 +238,7 @@ module Citron
         @_case.advice[:before][matches] = procedure
       end
 
-      alias_method :before, :Before
+      alias :before :Before
 
       # Define a _complex_ after procedure. The #before method allows
       # before procedures to be defined that are triggered by a match
@@ -282,13 +269,24 @@ module Citron
         @_case.advice[:after][matches] = procedure
       end
 
-      alias_method :after, :After
+      alias :after :After
 
-      # Mark a test or testcase to be omitted.
+      # Mark tests or subcases to be skipped.
       #
-      def Omit(test_obect)
-        test_object.omit = true
+      # @example
+      #   skip("reason for skipping") do
+      #     test "some test" do
+      #       ...
+      #     end
+      #   end
+      #
+      def Skip(reason=true, &block)
+        @_skip = reason
+        block.call
+        @_skip = false
       end
+
+      alias :skip :Skip
 
     end
 
