@@ -1,6 +1,6 @@
 = Citron
 
-{Homepage}[http://rubyworks.github.com/citron] &middot;
+{Homepage}[http://rubyworks.github.com/citron] -
 {Development}[http://github.com/rubyworks/citron]
 
 Author:: Thomas Sawyer
