@@ -2,11 +2,13 @@
 .ruby
 lib/citron/test_advice.rb
 lib/citron/test_case.rb
+lib/citron/test_proc.rb
 lib/citron/test_setup.rb
-lib/citron/test_unit.rb
+lib/citron/world.rb
 lib/citron.rb
+HISTORY.rdoc
 PROFILE
 LICENSE.txt
-README.md
+README.rdoc
 VERSION
 COPYING.rdoc

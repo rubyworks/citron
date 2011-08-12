@@ -43,8 +43,8 @@ alternatives: []
 revision: 0
 name: citron
 title: Citron
-suite: RubyWorks
 summary: Classic Unit-style Test Framework
 description: Citron is a unit testing framework with a classic test-case/test-unit style.
-version: 0.1.0
-date: "2011-07-29"
+organization: RubyWorks
+version: 0.2.0
+date: "2011-08-12"

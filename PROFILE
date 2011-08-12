@@ -1,7 +1,6 @@
 --- 
 name   : citron
 title  : Citron
-suite  : RubyWorks
 summary: Classic Unit-style Test Framework
 authors:
   - Thomas Sawyer <transfire@gmail.com>
@@ -17,13 +16,16 @@ resources:
 repositories:
   upstream: git://github.com/proutils/citron.git
 
-copyrights:
-  - 2011 Thomas Sawyer (BSD-2-Clause)
-
 requirements:
   - test
   - ae
   - detroit  (build)
   - reap     (build)
   - qed      (test)
+
+organization: RubyWorks
+
+copyrights:
+  - 2011 Thomas Sawyer (BSD-2-Clause)
+
 

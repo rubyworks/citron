@@ -1,30 +1,38 @@
-# Citron
+= Citron
 
-<table>
-<tr><td><b>Author   </b></td><td>Thomas Sawyer</td></tr>
-<tr><td><b>License  </b></td><td>FreeBSD</td></tr>
-<tr><td><b>Copyright</b></td><td>(c) 2011 Thomas Sawyer, Rubyworks</td></tr>
-</table>
+{Homepage}[http://rubyworks.github.com/citron] &middot;
+{Development}[http://github.com/rubyworks/citron]
 
-## Description
+Author:: Thomas Sawyer
+License:: FreeBSD
+Copyright:: (c) 2011 Thomas Sawyer, Rubyworks
+
+
+== Description
 
 Citron is a classic unit test framework. It defines a simple
 domain language for create classic-style tests.
 
-## Example
+
+== Example
 
 Here's a fun example.
 
     TestCase "Show them how to Beat It" do
 
+      setup do
+        @funky = "funky"
+        @right = "right"
+      end
+
       # fail
       test "show them how to funky" do
-        "funky".assert != "funky"
+        @funky.assert != "funky"
       end
 
       # pass
       test "show them what's right" do
-        "right".assert == "right"
+        @right.assert == "right"
       end
 
       # error
@@ -46,7 +54,8 @@ Here's a fun example.
 
     end
 
-## License
+
+== License
 
 Copyright (c) 2011 Thomas Sawyer, Rubyworks
 

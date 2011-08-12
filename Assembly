@@ -44,3 +44,13 @@ email:
   login  : <%= ENV['EMAIL_LOGIN'] %>
   secure : <%= ENV['EMAIL_SECURE'] %>
 
+rdoc:
+  format: redfish
+  output: site/api
+  main: README.rdoc
+  include: 
+    - 'lib'
+    - '[A-Z]*.*'
+  active: false
+
+
