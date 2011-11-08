@@ -151,7 +151,7 @@ module Citron
           :label   => label
         }
         testunit = TestProc.new(settings, &procedure)
-        if procedure.arity == 0
+        if procedure.arity == 0 || (RUBY_VERSION < '1.9' && procedure.arity == -1)
           @_case.tests << testunit
         else
           @_test = testunit
