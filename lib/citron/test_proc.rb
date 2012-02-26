@@ -158,6 +158,17 @@ module Citron
     #def set_proc(&proc)
     #  @procedure = proc
     #end
+
+    class Scope < World
+
+      def initialize(parent)
+        #include context
+        @_parent = parent
+        extend parent
+      end
+
+    end
+
   end
 
 end

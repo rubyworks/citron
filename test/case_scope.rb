@@ -17,9 +17,9 @@ testcase "Test Scope" do
   end
 
   test "test can't access case methods" do
-    #expect NoMethodError do
-      method(:setup)
-    #end
+    expect NameError do
+      method(:ok)
+    end
   end
 
 end

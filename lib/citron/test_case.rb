@@ -38,10 +38,10 @@ module Citron
       @context = settings[:context]
       @label   = settings[:label]
       @tags    = settings[:tags]
-      #@setup   = settings[:setup]
+      #@setup  = settings[:setup]
       @skip    = settings[:skip]
 
-      initialize_unit
+      @unit    = calc_unit
 
       if context
         @setup    = context.setup.copy(self)    if context.setup
@@ -56,15 +56,15 @@ module Citron
     end
 
     #
-    def initialize_unit
+    def calc_unit
       case @label
       when Module, Class
-        @unit = @label
+        @label
       when /^(\.|\#|\:\:)\w+/
         if @context && Module === @context.unit
-          @unit = [@context.unit, @label].join('')
+          [@context.unit, @label].join('')
         else
-          @unit = @label
+          @label
         end
       end
     end
@@ -164,6 +164,10 @@ module Citron
       @skip = reason
     end
 
+    def test_scope
+      @test_scope ||= TestProc::Scope.new(scope)
+    end
+
     #
     # Run +test+ in the context of this case.
     #
@@ -171,10 +175,10 @@ module Citron
     #   The test unit to run.
     #
     def run(test)
-      setup.call(scope) if setup
+      setup.call(test_scope) if setup
       #scope.instance_exec(*arguments, &procedure)
-      scope.instance_eval(&test.procedure)
-      teardown.call(scope) if teardown
+      test_scope.instance_eval(&test.procedure)
+      teardown.call(test_scope) if teardown
     end
 
     # The evaluation scope for a test case.
@@ -193,7 +197,7 @@ module Citron
         @_skip  = false
 
         if testcase.context
-          extend(testcase.context.scope)
+          include(testcase.context.scope)
         end
       end
 
