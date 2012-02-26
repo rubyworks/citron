@@ -1,10 +1,3 @@
-#require 'citron/pending'
-#require 'citron/test_context'
-require 'citron/test_advice'
-require 'citron/test_setup'
-require 'citron/test_proc'
-require 'citron/world'
-
 module Citron
 
   # Test Case encapsulates a collection of
@@ -18,14 +11,21 @@ module Citron
     # Brief description of the test case.
     attr :label
 
+    # Symbol list of tags. Trailing element may be Hash
+    # of `symbol => object`.
+    attr :tags
+
     # List of tests and sub-cases.
     attr :tests
 
-    # The setup and teardown advice.
+    # The setup advice.
     attr :setup
 
+    # The teardown advice.
+    attr :teardown
+
     # Pattern mathing before and after advice.
-    attr :advice
+    #attr :advice
 
     # Module for evaluating tests.
     attr :scope
@@ -35,13 +35,13 @@ module Citron
     def initialize(settings={}, &block)
       @context = settings[:context]
       @label   = settings[:label]
-      @setup   = settings[:setup]
+      @tags    = settings[:tags]
+      #@setup   = settings[:setup]
       @skip    = settings[:skip]
 
       if @context
-        @advice = context.advice.clone
-      else
-        @advice = TestAdvice.new
+        @setup    = context.setup.copy(self)    if context.setup
+        @teardown = context.teardown.copy(self) if context.teardown
       end
 
       @tests = []
@@ -52,66 +52,95 @@ module Citron
     end
 
     #
+    def setup=(test_setup)
+      @setup = test_setup
+    end
+
+    #
+    def teardown=(test_teardown)
+      @teardown = test_teardown
+    end
+
+    #
+    # Add new test or sub-case.
+    #
     def <<(test_object)
       @tests << test_object
     end
 
+    #
     # Iterate over each test and subcase.
+    #
     def each(&block)
       tests.each(&block)
     end
 
-    # Number of tests plus subcases.
+    # 
+    #def call
+    #  yield
+    #end
+
+    #
+    # Number of tests and sub-cases.
+    #
+    # @return [Fixnum] size
+    #
     def size
       tests.size
     end
 
+    #
     # Subclasses of TestCase can override this to describe
     # the type of test case they define.
-    def type
-      'Case'
-    end
+    #
+    # @return [String]
+    #
+    #def type
+    #  'TestCase'
+    #end
 
+    #
+    # Test case label.
+    #
+    # @return [String]
     #
     def to_s
       label.to_s
     end
 
     #
+    # Is test case to be skipped?
+    #
     def skip?
       @skip
     end
 
     #
+    # Set test case to be skipped.
+    #
     def skip=(reason)
       @skip = reason
     end
 
-    # Run test in the context of this case.
+    #
+    # Run +test+ in the context of this case.
     #
     # @param [TestProc] test
     #   The test unit to run.
     #
-    def run(test, &block)
-      advice[:before].each do |matches, block|
-        if matches.all?{ |match| test.match?(match) }
-          scope.instance_exec(test, &block) #block.call(unit)
-        end
-      end
-
-      block.call
-
-      advice[:after].each do |matches, block|
-        if matches.all?{ |match| test.match?(match) }
-          scope.instance_exec(test, &block) #block.call(unit)
-        end
-      end
+    def run(test)
+      setup.call(scope) if setup
+      #scope.instance_exec(*arguments, &procedure)
+      scope.instance_eval(&test.procedure)
+      teardown.call(scope) if teardown
     end
 
     #
     class Scope < World
 
-      # Setup new evaluation scope.
+      #
+      # Initialize new evaluation scope.
+      #
       def initialize(testcase) #, &code)
         @_case  = testcase
         @_setup = testcase.setup
@@ -122,69 +151,73 @@ module Citron
         end
       end
 
-      #--
       # TODO: Instead of reusing TestCase can we have a TestContext
-      #       that more generically mimics it's context context?
-      #++
+      #       that more generically mimics it's context?
 
+      #
       # Create a sub-case.
-      def Context(label, &block)
+      #
+      def Context(label, *tags, &block)
         settings = {
           :context => @_case,
-          :setup   => @_setup,
+          #:setup   => @_setup,
           :skip    => @_skip,
-          :label   => label
+          :label   => label,
+          :tags    => tags
         }
+
         testcase = TestCase.new(settings, &block)
+
         @_case.tests << testcase
+
         testcase
       end
 
       alias :context :Context
 
-      # Create a test.
-      def Test(label=nil, &procedure)
+      #
+      # Create a test, or a parameterized test.
+      #
+      def Test(label=nil, *tags, &procedure)
         settings = {
           :context => @_case,
-          :setup   => @_setup,
+          #:setup   => @_setup,
           :skip    => @_skip,
-          :label   => label
+          :label   => label,
+          :tags    => tags
         }
-        testunit = TestProc.new(settings, &procedure)
+
         if procedure.arity == 0 || (RUBY_VERSION < '1.9' && procedure.arity == -1)
-          @_case.tests << testunit
+          test = TestProc.new(settings, &procedure)
+          @_case.tests << test
+          @_test = nil
+          test
         else
-          @_test = testunit
+          @_test = [settings, procedure]
         end
-        testunit
       end
 
       alias :test :Test
 
       #
+      # Actualize a parameterized test.
+      #
+      # @todo Better name than `Ok` ?
       #
       def Ok(*args)
-        test = @_test
-        test.arguments = args
+        settings, procedure = *@_test
+
+        test = TestProc.new(settings) do
+          procedure.call(*args)
+        end
+
         @_case << test
-        @_test = nil
+        #@_test = nil
+
         return test
       end
 
       alias :ok :Ok
-
-      #
-      #
-      def No(*args)
-        test = @_test
-        test.arguments = args
-        test.negate    = true
-        @_case << test
-        @_test = nil
-        return test
-      end
-
-      alias :no :No
 
       # Setup is used to set things up for each unit test.
       # The setup procedure is run before each unit.
@@ -193,22 +226,46 @@ module Citron
       #   A brief description of what the setup procedure sets-up.
       #
       def Setup(label=nil, &proc)
-        @_setup = TestSetup.new(@_case, label, &proc)
+        if proc
+          @_case.setup    = TestSetup.new(@_case, label, &proc)
+          @_case.teardown = nil  # if the setup is reset, then so it the teardown
+        else
+          @_case.setup
+        end
       end
 
       alias :setup :Setup
 
-      #alias_method :Concern, :Setup
-      #alias_method :concern, :Setup
-
       # Teardown procedure is used to clean-up after each unit test.
       #
       def Teardown(&proc)
-        @_setup.teardown = proc
+        if proc
+          @_case.teardown = TestTeardown.new(@_case, &proc)
+        else
+          @_case.teardown
+        end
       end
 
       alias :teardown :Teardown
 
+      # Mark tests or subcases to be skipped.
+      #
+      # @example
+      #   skip("reason for skipping") do
+      #     test "some test" do
+      #       ...
+      #     end
+      #   end
+      #
+      def Skip(reason=true, &block)
+        @_skip = reason
+        block.call
+        @_skip = false
+      end
+
+      alias :skip :Skip
+
+=begin
       # Define a _complex_ before procedure. The #before method allows
       # before procedures to be defined that are triggered by a match
       # against the unit's target method name or _aspect_ description.
@@ -270,23 +327,7 @@ module Citron
       end
 
       alias :after :After
-
-      # Mark tests or subcases to be skipped.
-      #
-      # @example
-      #   skip("reason for skipping") do
-      #     test "some test" do
-      #       ...
-      #     end
-      #   end
-      #
-      def Skip(reason=true, &block)
-        @_skip = reason
-        block.call
-        @_skip = false
-      end
-
-      alias :skip :Skip
+=end
 
     end
 

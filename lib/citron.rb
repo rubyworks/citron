@@ -1,16 +1,16 @@
-module Citron
-  $TEST_SUITE ||= []
+$TEST_SUITE ||= []
 
-  require 'citron/test_case'
-  require 'citron/test_proc'
-  require 'citron/test_advice'
+module Citron
+  require 'citron/world'
   require 'citron/test_setup'
-end
+  require 'citron/test_teardown'
+  require 'citron/test_proc'
+  require 'citron/test_case'
 
-module Citron
   module DSL
-
+    #
     # Define a general test case.
+    #
     def test_case(label, &block)
       $TEST_SUITE << Citron::TestCase.new(:label=>label, &block)
     end
@@ -18,6 +18,8 @@ module Citron
     alias :TestCase :test_case
     alias :testcase :test_case
   end
+
 end
 
 extend Citron::DSL
+

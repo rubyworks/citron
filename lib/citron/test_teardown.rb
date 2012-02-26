@@ -1,8 +1,8 @@
 module Citron
 
-  # Ecapsulate a test case's setup code.
+  # Ecapsulate a test case's teardown code.
   #
-  class TestSetup
+  class TestTeardown
 
     #
     # The test case to which this advice belong.
@@ -15,32 +15,26 @@ module Citron
     attr :procedures
 
     #
-    # A brief description of the setup.
-    #
-    attr :label
-
-    #
     # Initialize new Setup instance.
     #
-    def initialize(context, label, &proc)
+    def initialize(context, &proc)
       @context    = context
-      @label      = label.to_s
       @procedures = []
 
       @procedures << proc if proc
     end
 
     #
-    # Copy the setup for a new context.
+    # Copy the teardown for a new context.
     #
     def copy(context)
-      c = self.class.new(context, label)
+      c = self.class.new(context)
       c.procedures = procedures
       c
     end
 
     #
-    # Run setup procedure in test scope.
+    # Run teardown procedure in test scope.
     #
     def call(scope)
       procedures.each do |proc|
@@ -49,17 +43,10 @@ module Citron
     end
 
     #
-    # Returns the description with newlines removed.
-    #
-    def to_s
-      label.gsub(/\n/, ' ')
-    end
-
-    #
-    # Add a setup procedure.
+    # Add a teardown procedure.
     #
     def add(&proc)
-      @procedures << proc
+      procedures << proc
     end
 
   protected
