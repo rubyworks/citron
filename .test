@@ -1,0 +1,6 @@
+Test.run :default do |run|
+  require 'ae'
+  require 'citron'
+  
+  run.files << "test/case_*.rb"
+end
