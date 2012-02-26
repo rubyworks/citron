@@ -1,17 +1,18 @@
-= COPYRIGHT
+# COPYRIGHT
 
+NOTICES:
 
-== NOTICES
+  Project:   Citron
 
-Project::   Citron
-Copyright:: (c) 2011 Rubyworks
-License::   BSD-2-Clause
-Website::   http://rubyworks.github.com/citron
+  Copyright: (c) 2011 Rubyworks
 
+  License:   BSD-2-Clause
 
-== LICENSES
+  Website:   http://rubyworks.github.com/citron
 
-    BSD-2-Clause
+LICENSES:
+
+  BSD-2-Clause:
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
