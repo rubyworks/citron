@@ -1,5 +1,6 @@
 module Citron
 
+  # Test procedure --what you would call a honest to goodness unit test.
   #
   class TestProc
 
@@ -7,10 +8,12 @@ module Citron
     #
     def initialize(options={}, &procedure)
       @context   = options[:context]
-      @setup     = options[:setup]
+      #@setup     = options[:setup]
       @label     = options[:label]
       @tags      = options[:tags]
       @skip      = options[:skip]
+      @file      = options[:file]
+      @line      = options[:line]
 
       @procedure = procedure
       @tested    = false
@@ -43,13 +46,6 @@ module Citron
     # Test procedure, in which test assertions should be made.
     #
     attr :procedure
-
-    #
-    # Setup and teardown procedures.
-    #
-    def setup
-      context.setup
-    end
 
     #
     #
@@ -102,21 +98,30 @@ module Citron
     # @return [TestSetup] setup
     #
     def setup
-      @setup
+      @context.setup
     end
 
     #
-    # Ruby Test looks for `topic` as the desciption of a test's setup.
+    # Ruby Test looks for `#topic` as the desciption of a test's setup.
+    #
+    # @return [String] Description of the setup.
     #
     def topic
-      @setup.to_s
+      setup.to_s
+    end
+
+    # 
+    # Location of test definition.
+    #
+    def source_location
+      [file, line]
     end
 
     #
-    #def scope
-    #  context.scope
-    #end
-
+    # Match test's label and/or tags.
+    #
+    # @param [String,Symbol,Regexp,Hash] match
+    #   Pattern to match against.
     #
     # @return [Boolean]
     #
@@ -140,6 +145,10 @@ module Citron
       context.run(self)
     end
 
+    #
+    # Convert `#call` to Proc.
+    #
+    # @return [Proc]
     #
     def to_proc
       lambda{ call }
