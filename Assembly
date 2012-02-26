@@ -1,36 +1,39 @@
 ---
 github:
-  active: true
+  gh_pages: web
 
 gem:
   active: true
 
 dnote:
+  title: Source Notes
   labels: ~
-  output: log/NOTES.rdoc
+  output: log/notes.html
 
 yard:
   yardopts: true
 
-qed:
-  files    : ~
-  #exclude : ~
-  #loadpath: ~
-  #requires: ~
-  #live    : false   
-  active   : false
+#qed:
+#  active   : false
+#  files    : ~
+#  #exclude : ~
+#  #loadpath: ~
+#  #requires: ~
+#  #live    : false   
 
-qedoc:
-  files : spec/
-  output: QED.rdoc
-  active: false
+
+#qedoc:
+#  active: false
+#  files : spec/
+#  output: QED.rdoc
 
 vclog:
-  output: log/ChangeLog.rdoc
   active: false
+  output:
+    - log/changes.html
+    - log/history.html
 
 email:
-  service: Email
   file   : ~
   subject: ~
   mailto : 
@@ -44,13 +47,13 @@ email:
   login  : <%= ENV['EMAIL_LOGIN'] %>
   secure : <%= ENV['EMAIL_SECURE'] %>
 
-rdoc:
-  format: redfish
-  output: site/api
-  main: README.rdoc
-  include: 
-    - 'lib'
-    - '[A-Z]*.*'
-  active: false
+#rdoc:
+#  format: redfish
+#  output: site/api
+#  main: README.rdoc
+#  include: 
+#    - 'lib'
+#    - '[A-Z]*.*'
+#  active: false
 
 

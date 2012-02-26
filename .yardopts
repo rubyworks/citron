@@ -1,6 +1,8 @@
+--title Citron
 --output-dir doc
 --protected
---readme README.rdoc
+--private
+--readme README.md
 lib
 -
 [A-Z]*.*
