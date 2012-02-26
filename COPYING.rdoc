@@ -1,12 +1,18 @@
-= COPYRIGHT NOTICES
+= COPYRIGHT
 
-== Citron
+
+== NOTICES
+
+=== Citron
 
 Copyright:: (c) 2011 Thomas Sawyer, RubyWorks
 License:: BSD-2-Clause
 Website:: http://rubyworks.github.com/citron
 
-    Copyright 2011 Thomas Sawyer. All rights reserved.
+
+== LICENSES
+
+=== BSD-2-Clause
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
