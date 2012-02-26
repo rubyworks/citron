@@ -1,20 +1,17 @@
-= Citron
+# Citron
 
-{Homepage}[http://rubyworks.github.com/citron] -
-{Development}[http://github.com/rubyworks/citron]
-
-Author:: Thomas Sawyer
-License:: FreeBSD
-Copyright:: (c) 2011 Thomas Sawyer, Rubyworks
+[Website](http://rubyworks.github.com/citron) /
+[Development](http://github.com/rubyworks/citron) /
+[Report Issue](http://github.com/rubyworks/citron/issues) /
 
 
-== Description
+## Description
 
-Citron is a classic unit test framework. It defines a simple
-domain language for create classic-style tests.
+Citron is a traditional unit test framework. It defines a simple
+domain language for creating classically styled unit tests.
 
 
-== Example
+## Example
 
 Here's a fun example.
 
@@ -55,11 +52,11 @@ Here's a fun example.
     end
 
 
-== License
+## Copyrights
 
-Copyright (c) 2011 Thomas Sawyer, Rubyworks
+Copyright (c) 2011 Rubyworks
 
-Citron is distributed according to the terms of the FreeBSD license.
+Citron is distributable according to the terms of the **FreeBSD** license.
 
-See COPYING.rd for details.
+See COPYING.md for details.
 
