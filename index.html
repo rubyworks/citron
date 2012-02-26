@@ -21,7 +21,7 @@
 <div class="page"> 
   <img src="assets/images/cut-citron.png" height="200px" align="right" style="padding-top: 15px;"/> 
   <h1><img src="assets/images/title.png"/></h1> 
-  <h2>Clean Classic Testing</h2> 
+  <h2>Clean Classic Unit Testing</h2> 
 </div> 
 </div> 
  
@@ -55,25 +55,24 @@
     <a href="http://github.com/rubyworks/citron">Code</a> 
   </div> 
 
-  <h3>Example</h3> 
+  <h3>Overview</h3> 
  
   <p>Citron tests are organized into test cases and test procedures.
   Here is an example:</p> 
  
 <pre class="sh_ruby">
   TestCase "Show them how to Beat It" do
-
-    # will fail
+    # fail
     test "show them how to funky" do
       "funky".assert != "funky"
     end
 
-    # will pass
+    # pass
     test "show them what's right" do
       "right".assert == "right"
     end
 
-    # will error
+    # error
     test "no one wants to be defeated" do
       raise SyntaxError
     end
@@ -83,13 +82,14 @@
       raise NotImplementedError
     end
 
-    # omit
-    test "just beat it" do
-      e = NotImplementedError.new
-      e.set_assertion(true)
-      raise e
-    end
+    # sub-case
+    context "just beat it" do
+      skip "jruby can't funcky" if jruby?
 
+      test "beat it, beat it, beat it..." do
+        refute jruby?
+      end
+    end
   end
 </pre> 
  
@@ -136,9 +136,8 @@
  
   <br style="clear: both;" /> 
  
-  <div style="margin-top: 30px;"> 
-      <b>Citron</b>, Copyright &copy; 2009 Thomas Sawyer &middot;
-      <b>Contact:</b> transfire @ gmail.com
+  <div class="copyright" style="margin-top: 30px;"> 
+    Citron &middot; Copyright &copy; 2009 <a href="http://rubyworks.github.com">Rubyworks</a> &middot; All rights reserved.
   </div> 
 </div> 
 </div> 
