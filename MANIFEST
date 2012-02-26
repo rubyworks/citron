@@ -6,8 +6,11 @@ lib/citron/test_setup.rb
 lib/citron/test_teardown.rb
 lib/citron/world.rb
 lib/citron.rb
+test/case_basic.rb
 test/case_parametric_tests.rb
+test/case_scope.rb
 test/case_setup.rb
+test/case_unit.rb
 COPYING.md
 LICENSE.txt
 HISTORY.md
