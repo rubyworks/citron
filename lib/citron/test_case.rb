@@ -24,13 +24,15 @@ module Citron
     # The teardown advice.
     attr :teardown
 
-    # Pattern mathing before and after advice.
-    #attr :advice
+    # Code unit that is subject of test case.
+    attr :unit
 
     # Module for evaluating tests.
     attr :scope
 
-    # A test case +target+ is a class or module.
+  private
+
+    # Initialize new TestCase.
     #
     def initialize(settings={}, &block)
       @context = settings[:context]
@@ -39,7 +41,9 @@ module Citron
       #@setup   = settings[:setup]
       @skip    = settings[:skip]
 
-      if @context
+      initialize_unit
+
+      if context
         @setup    = context.setup.copy(self)    if context.setup
         @teardown = context.teardown.copy(self) if context.teardown
       end
@@ -52,10 +56,34 @@ module Citron
     end
 
     #
+    def initialize_unit
+      case @label
+      when Module, Class
+        @unit = @label
+      when /^(\.|\#|\:\:)\w+/
+        if @context && Module === @context.unit
+          @unit = [@context.unit, @label].join('')
+        else
+          @unit = @label
+        end
+      end
+    end
+
+  public
+
+    #
+    # Assign the setup procedure
+    #
+    # @param [TestSetup] test_setup
+    #
     def setup=(test_setup)
       @setup = test_setup
     end
 
+    #
+    # Assign the teardown procedure.
+    #
+    # @param [TestTeardown] test_teardown
     #
     def teardown=(test_teardown)
       @teardown = test_teardown
@@ -64,12 +92,18 @@ module Citron
     #
     # Add new test or sub-case.
     #
+    # @param [TestCase,TestProc] test_obejct
+    #   Test sub-case or procedure to add to this case.
+    #
     def <<(test_object)
       @tests << test_object
     end
 
     #
-    # Iterate over each test and subcase.
+    # Iterate over each test and sub-case.
+    #
+    # @param [Proc] block
+    #   Iteration procedure.
     #
     def each(&block)
       tests.each(&block)
@@ -111,12 +145,20 @@ module Citron
     #
     # Is test case to be skipped?
     #
+    # @return [Boolean,String]
+    #   If +false+ or +nil+ if not skipped, otherwise
+    #   +true+ or a string explain why to skip.
+    #
     def skip?
       @skip
     end
 
     #
     # Set test case to be skipped.
+    #
+    # @param [Boolean,String] reason
+    #   Set to +false+ or +nil+ if not skipped, otherwise
+    #   +true+ or a string explain why to skip.
     #
     def skip=(reason)
       @skip = reason
@@ -135,11 +177,15 @@ module Citron
       teardown.call(scope) if teardown
     end
 
+    # The evaluation scope for a test case.
     #
     class Scope < World
 
       #
       # Initialize new evaluation scope.
+      #
+      # @param [TestCase] testcase
+      #   The test case this scope belongs.
       #
       def initialize(testcase) #, &code)
         @_case  = testcase
@@ -151,11 +197,15 @@ module Citron
         end
       end
 
-      # TODO: Instead of reusing TestCase can we have a TestContext
-      #       that more generically mimics it's context?
-
       #
       # Create a sub-case.
+      #
+      # @param [String] label
+      #   The breif description of the test case.
+      #
+      # @param [Array<Symbol,Hash>] tags
+      #   List of symbols with optional trailing `symbol=>object` hash.
+      #   These can be used as a means of filtering tests.
       #
       def Context(label, *tags, &block)
         settings = {
@@ -178,13 +228,24 @@ module Citron
       #
       # Create a test, or a parameterized test.
       #
+      # @param [String] label
+      #   The breif description of the test case.
+      #
+      # @param [Array<Symbol,Hash>] tags
+      #   List of symbols with optional trailing `symbol=>object` hash.
+      #   These can be used as a means of filtering tests.
+      #
       def Test(label=nil, *tags, &procedure)
+        file, line, _ = *caller[0].split(':')
+
         settings = {
           :context => @_case,
           #:setup   => @_setup,
           :skip    => @_skip,
           :label   => label,
-          :tags    => tags
+          :tags    => tags,
+          :file    => file,
+          :line    => line
         }
 
         if procedure.arity == 0 || (RUBY_VERSION < '1.9' && procedure.arity == -1)
@@ -212,13 +273,13 @@ module Citron
         end
 
         @_case << test
-        #@_test = nil
 
         return test
       end
 
       alias :ok :Ok
 
+      #
       # Setup is used to set things up for each unit test.
       # The setup procedure is run before each unit.
       #
@@ -236,6 +297,7 @@ module Citron
 
       alias :setup :Setup
 
+      #
       # Teardown procedure is used to clean-up after each unit test.
       #
       def Teardown(&proc)
@@ -248,86 +310,39 @@ module Citron
 
       alias :teardown :Teardown
 
-      # Mark tests or subcases to be skipped.
+      #
+      # Mark tests or sub-cases to be skipped. If block is given, then
+      # tests defined within the block are skipped. Without a block
+      # all subsquent tests defined in a context will be skipped.
+      #
+      # @param [Boolean,String] reason
+      #   Set to +false+ or +nil+ if not skipped, otherwise
+      #   +true+ or a string explain why to skip.
       #
       # @example
-      #   skip("reason for skipping") do
+      #   skip("awaiting new feature") do
       #     test "some test" do
       #       ...
       #     end
       #   end
       #
+      # @example
+      #   skip("not on jruby") if jruby?
+      #   test "some test" do
+      #     ...
+      #   end
+      #
       def Skip(reason=true, &block)
-        @_skip = reason
-        block.call
-        @_skip = false
+        if block
+          @_skip = reason
+          block.call if block
+          @_skip = false
+        else
+          @_skip = reason
+        end
       end
 
       alias :skip :Skip
-
-=begin
-      # Define a _complex_ before procedure. The #before method allows
-      # before procedures to be defined that are triggered by a match
-      # against the unit's target method name or _aspect_ description.
-      # This allows groups of tests to be defined that share special
-      # setup code.
-      #
-      # @example
-      #   Method :puts do
-      #     Test "standard output (@stdout)" do
-      #       puts "Hello"
-      #     end
-      #
-      #     Before /@stdout/ do
-      #       $stdout = StringIO.new
-      #     end
-      #
-      #     After /@stdout/ do
-      #       $stdout = STDOUT
-      #     end
-      #   end
-      #
-      # @param [Array<Symbol,Regexp>] matches
-      #   List of match critera that must _all_ be matched
-      #   to trigger the before procedure.
-      #
-      def Before(*matches, &procedure)
-        @_case.advice[:before][matches] = procedure
-      end
-
-      alias :before :Before
-
-      # Define a _complex_ after procedure. The #before method allows
-      # before procedures to be defined that are triggered by a match
-      # against the unit's target method name or _aspect_ description.
-      # This allows groups of tests to be defined that share special
-      # teardown code.
-      #
-      # @example
-      #   Method :puts do
-      #     Test "standard output (@stdout)" do
-      #       puts "Hello"
-      #     end
-      #
-      #     Before /@stdout/ do
-      #       $stdout = StringIO.new
-      #     end
-      #
-      #     After /@stdout/ do
-      #       $stdout = STDOUT
-      #     end
-      #   end
-      #
-      # @param [Array<Symbol,Regexp>] matches
-      #   List of match critera that must _all_ be matched
-      #   to trigger the after procedure.
-      #
-      def After(*matches, &procedure)
-        @_case.advice[:after][matches] = procedure
-      end
-
-      alias :after :After
-=end
 
     end
 
