@@ -4,9 +4,9 @@
 
 ### Citron
 
-| Project   | Copyright           | License      | Website                            |
-|-----------|---------------------|--------------|------------------------------------|
-| License   | (c) 2011 Rubyworks  | BSD-2-Clause | http://rubyworks.github.com/citron |
+| Project  | Copyright           | License      | Website                            |
+|----------|---------------------|--------------|------------------------------------|
+| Citron   | (c) 2011 Rubyworks  | BSD-2-Clause | http://rubyworks.github.com/citron |
 
 
 ## LICENSES
