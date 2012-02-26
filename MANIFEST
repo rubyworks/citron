@@ -1,4 +1,4 @@
-#!mast .ruby .yaropts bin lib spec test [A-Z][A-Z]*
+#!mast .ruby .yaropts bin lib spec test [A-Z]*.*
 .ruby
 lib/citron/test_case.rb
 lib/citron/test_proc.rb
@@ -9,8 +9,6 @@ lib/citron.rb
 test/case_parametric_tests.rb
 test/case_setup.rb
 COPYING.md
-PROFILE
 LICENSE.txt
 HISTORY.md
 README.md
-VERSION
