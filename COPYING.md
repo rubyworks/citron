@@ -5,9 +5,9 @@
 
 ### Citron
 
-* Copyright (c)2011 Rubyworks (BSD-2-Clause)
-
 http://rubyworks.github.com/citron
+
+* Copyright (c) 2011 Rubyworks (BSD-2-Clause)
 
 
 ## LICENSES
