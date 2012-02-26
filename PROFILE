@@ -1,5 +1,6 @@
 --- 
 name   : citron
+version: 0.3.0
 title  : Citron
 summary: Classic Unit-style Test Framework
 authors:
@@ -17,7 +18,7 @@ repositories:
   upstream: git://github.com/proutils/citron.git
 
 requirements:
-  - test
+  - rubytest
   - ae
   - detroit  (build)
   - reap     (build)
