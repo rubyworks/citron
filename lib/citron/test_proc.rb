@@ -8,7 +8,6 @@ module Citron
     #
     def initialize(options={}, &procedure)
       @context   = options[:context]
-      #@setup     = options[:setup]
       @label     = options[:label]
       @tags      = options[:tags]
       @skip      = options[:skip]
@@ -97,18 +96,20 @@ module Citron
     #
     # @return [TestSetup] setup
     #
-    def setup
-      @context.setup
-    end
+    #def setup
+    #  @context.setup
+    #end
 
-    #
-    # Ruby Test looks for `#topic` as the desciption of a test's setup.
-    #
-    # @return [String] Description of the setup.
-    #
-    def topic
-      setup.to_s
-    end
+    # TODO: possible to support topic?
+
+    ##
+    ## Ruby Test looks for `#topic` as the desciption of a test's setup.
+    ##
+    ## @return [String] Description of the setup.
+    ##
+    #def topic
+    #  setup.to_s
+    #end
 
     # 
     # Location of test definition.
@@ -142,17 +143,27 @@ module Citron
     # Run this test in context.
     #
     def call
-      context.run(self)
+      @scope.setup
+      @scope.instance_eval(&procedure)
+      @scope.teardown
     end
 
     #
-    # Convert `#call` to Proc.
+    # Return copy with `@scope` set.
     #
-    # @return [Proc]
-    #
-    def to_proc
-      lambda{ call }
+    def for(scope)
+      @scope = scope
+      self.dup
     end
+
+    ##
+    ## Convert `#call` to Proc.
+    ##
+    ## @return [Proc]
+    ##
+    #def to_proc
+    #  lambda{ call }  # procedure ?
+    #end
 
     #
     #def set_proc(&proc)

@@ -3,198 +3,99 @@ module Citron
   # Test Case encapsulates a collection of
   # unit tests organized into groups of contexts.
   #
-  class TestCase
+  class TestCase < World
 
-    # The parent context in which this case resides.
-    attr :context
+    class << self
 
-    # Brief description of the test case.
-    attr :label
+      # Brief description of the test case.
+      attr :label
 
-    # Symbol list of tags. Trailing element may be Hash
-    # of `symbol => object`.
-    attr :tags
+      # Symbol list of tags. Trailing element may be Hash
+      # of `symbol => object`.
+      attr :tags
 
-    # List of tests and sub-cases.
-    attr :tests
+      # List of tests and sub-cases.
+      attr :tests
 
-    # The setup advice.
-    attr :setup
+      # Code unit that is subject of test case.
+      attr :unit
 
-    # The teardown advice.
-    attr :teardown
+      # Initialize new TestCase.
+      #
+      def __set__(settings={}, &block)
+        @label   = settings[:label]
+        @tags    = settings[:tags]
+        @skip    = settings[:skip]
 
-    # Code unit that is subject of test case.
-    attr :unit
+        @unit    = calc_unit(@label)
 
-    # Module for evaluating tests.
-    attr :scope
+        @tests   = []
 
-  private
-
-    # Initialize new TestCase.
-    #
-    def initialize(settings={}, &block)
-      @context = settings[:context]
-      @label   = settings[:label]
-      @tags    = settings[:tags]
-      #@setup   = settings[:setup]
-      @skip    = settings[:skip]
-
-      initialize_unit
-
-      if context
-        @setup    = context.setup.copy(self)    if context.setup
-        @teardown = context.teardown.copy(self) if context.teardown
+        class_eval(&block)
       end
 
-      @tests = []
-
-      @scope = Scope.new(self)
-
-      @scope.module_eval(&block) if block
-    end
-
-    #
-    def initialize_unit
-      case @label
-      when Module, Class
-        @unit = @label
-      when /^(\.|\#|\:\:)\w+/
-        if @context && Module === @context.unit
-          @unit = [@context.unit, @label].join('')
-        else
-          @unit = @label
+      #
+      #
+      #
+      def calc_unit(label)
+        case label
+        when Module, Class
+          @label
+        when /^(\.|\#|\:\:)\w+/
+          if Module === superclass.unit
+            [superclass.unit, @label].join('')
+          else
+            @label
+          end
         end
       end
-    end
-
-  public
-
-    #
-    # Assign the setup procedure
-    #
-    # @param [TestSetup] test_setup
-    #
-    def setup=(test_setup)
-      @setup = test_setup
-    end
-
-    #
-    # Assign the teardown procedure.
-    #
-    # @param [TestTeardown] test_teardown
-    #
-    def teardown=(test_teardown)
-      @teardown = test_teardown
-    end
-
-    #
-    # Add new test or sub-case.
-    #
-    # @param [TestCase,TestProc] test_obejct
-    #   Test sub-case or procedure to add to this case.
-    #
-    def <<(test_object)
-      @tests << test_object
-    end
-
-    #
-    # Iterate over each test and sub-case.
-    #
-    # @param [Proc] block
-    #   Iteration procedure.
-    #
-    def each(&block)
-      tests.each(&block)
-    end
-
-    # 
-    #def call
-    #  yield
-    #end
-
-    #
-    # Number of tests and sub-cases.
-    #
-    # @return [Fixnum] size
-    #
-    def size
-      tests.size
-    end
-
-    #
-    # Subclasses of TestCase can override this to describe
-    # the type of test case they define.
-    #
-    # @return [String]
-    #
-    #def type
-    #  'TestCase'
-    #end
-
-    #
-    # Test case label.
-    #
-    # @return [String]
-    #
-    def to_s
-      label.to_s
-    end
-
-    #
-    # Is test case to be skipped?
-    #
-    # @return [Boolean,String]
-    #   If +false+ or +nil+ if not skipped, otherwise
-    #   +true+ or a string explain why to skip.
-    #
-    def skip?
-      @skip
-    end
-
-    #
-    # Set test case to be skipped.
-    #
-    # @param [Boolean,String] reason
-    #   Set to +false+ or +nil+ if not skipped, otherwise
-    #   +true+ or a string explain why to skip.
-    #
-    def skip=(reason)
-      @skip = reason
-    end
-
-    #
-    # Run +test+ in the context of this case.
-    #
-    # @param [TestProc] test
-    #   The test unit to run.
-    #
-    def run(test)
-      setup.call(scope) if setup
-      #scope.instance_exec(*arguments, &procedure)
-      scope.instance_eval(&test.procedure)
-      teardown.call(scope) if teardown
-    end
-
-    # The evaluation scope for a test case.
-    #
-    class Scope < World
 
       #
-      # Initialize new evaluation scope.
+      # Subclasses of TestCase can override this to describe
+      # the type of test case they define.
       #
-      # @param [TestCase] testcase
-      #   The test case this scope belongs.
+      # @return [String]
       #
-      def initialize(testcase) #, &code)
-        @_case  = testcase
-        @_setup = testcase.setup
-        @_skip  = false
+      #def type
+      #  'TestCase'
+      #end
 
-        if testcase.context
-          extend(testcase.context.scope)
-        end
+      #
+      # Add new test or sub-case.
+      #
+      # @param [Class<TestCase>,TestProc] test_obejct
+      #   Test sub-case or procedure to add to this case.
+      #
+      def <<(test_object)
+        @tests ||= []
+        @tests << test_object
+      end
+
+      # 
+      #def call
+      #  yield
+      #end
+
+      #
+      # Is test case to be skipped?
+      #
+      # @return [Boolean,String]
+      #   If +false+ or +nil+ if not skipped, otherwise
+      #   +true+ or a string explain why to skip.
+      #
+      def skip?
+        @skip
+      end
+
+      #
+      # Set test case to be skipped.
+      #
+      # @param [Boolean,String] reason
+      #   Set to +false+ or +nil+ if not skipped, otherwise
+      #   +true+ or a string explain why to skip.
+      #
+      def skip=(reason)
+        @skip = reason
       end
 
       #
@@ -208,19 +109,17 @@ module Citron
       #   These can be used as a means of filtering tests.
       #
       def Context(label, *tags, &block)
-        settings = {
-          :context => @_case,
-          #:setup   => @_setup,
+        context = Class.new(self)
+        context.__set__(
           :skip    => @_skip,
           :label   => label,
-          :tags    => tags
-        }
+          :tags    => tags,
+          &block
+        )
 
-        testcase = TestCase.new(settings, &block)
+        self << context
 
-        @_case.tests << testcase
-
-        testcase
+        context
       end
 
       alias :context :Context
@@ -239,8 +138,7 @@ module Citron
         file, line, _ = *caller[0].split(':')
 
         settings = {
-          :context => @_case,
-          #:setup   => @_setup,
+          :context => self,
           :skip    => @_skip,
           :label   => label,
           :tags    => tags,
@@ -250,9 +148,12 @@ module Citron
 
         if procedure.arity == 0 || (RUBY_VERSION < '1.9' && procedure.arity == -1)
           test = TestProc.new(settings, &procedure)
-          @_case.tests << test
+
+          self << test
+
           @_test = nil
-          test
+
+          return test
         else
           @_test = [settings, procedure]
         end
@@ -272,7 +173,7 @@ module Citron
           procedure.call(*args)
         end
 
-        @_case << test
+        self << test
 
         return test
       end
@@ -287,12 +188,9 @@ module Citron
       #   A brief description of what the setup procedure sets-up.
       #
       def Setup(label=nil, &proc)
-        if proc
-          @_case.setup    = TestSetup.new(@_case, label, &proc)
-          @_case.teardown = nil  # if the setup is reset, then so it the teardown
-        else
-          @_case.setup
-        end
+        define_method(:setup, &proc)
+        # if the setup is reset, then so should the teardown
+        define_method(:teardown){}
       end
 
       alias :setup :Setup
@@ -301,11 +199,7 @@ module Citron
       # Teardown procedure is used to clean-up after each unit test.
       #
       def Teardown(&proc)
-        if proc
-          @_case.teardown = TestTeardown.new(@_case, &proc)
-        else
-          @_case.teardown
-        end
+        define_method(:teardown, &proc)
       end
 
       alias :teardown :Teardown
@@ -344,6 +238,61 @@ module Citron
 
       alias :skip :Skip
 
+      alias :inspect :to_s
+
+      #
+      # Test case label.
+      #
+      # @return [String]
+      #
+      def to_s
+        label.to_s
+      end
+
+    end
+
+    #
+    # Iterate over each test and sub-case.
+    #
+    def each
+      self.class.tests.each do |test_object|
+        case test_object
+        when Class #TestCase
+          yield(test_object.new)
+        when TestProc
+          yield(test_object.for(self))
+        end
+      end
+    end
+
+    #
+    # Number of tests and sub-cases.
+    #
+    # @return [Fixnum] size
+    #
+    def size
+      self.class.tests.size
+    end
+
+    #
+    # Test case label.
+    #
+    # @return [String]
+    #
+    def to_s
+      self.class.label.to_s
+    end
+
+    #
+    # Dummy method for setup.
+    #
+    def setup
+    end
+
+    #
+    # Dummy method for teardown.
+    #
+    def teardown
     end
 
   end
