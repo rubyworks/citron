@@ -2,13 +2,11 @@
 
 ## NOTICES
 
-### Citron
-
-    Copyright (c) 2011 Rubyworks
-
-    BSD-2-Clause License
-
-    http://rubyworks.github.com/citron
+| Citron    |                                    |
+|-----------|------------------------------------|
+| Copyright | (c) 2011 Rubyworks                 |
+| License   | BSD-2-Clause License               |
+| Website   | http://rubyworks.github.com/citron |
 
 
 ## LICENSES
