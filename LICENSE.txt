@@ -1,6 +1,9 @@
-BSD 2 Clause License
+Citron - Classic Unit Testing
 
-Copyright 2011 Thomas Sawyer. All rights reserved.
+Copyright (c) 2011 Rubyworks.
+Licensed  (s) BSD-2-Clause
+
+All rights are expressly reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

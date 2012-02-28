@@ -5,9 +5,11 @@
 
 ### Citron
 
-http://rubyworks.github.com/citron
-
-* Copyright (c) 2011 Rubyworks (BSD-2-Clause)
+| Citron    | Classic Unit Testing                        |
+|-----------|---------------------------------------------|
+| Copyright | (c) 2011 Rubyworks<br/>All rights reserved. |
+| Licensed  | (s) BSD-2-Clause                            |
+| Website   | http://rubyworks.github.com/citron          |
 
 
 ## LICENSES
