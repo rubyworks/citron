@@ -5,12 +5,10 @@
 
 ### Citron
 
-| **Project**     | Citro                                       |
-|-----------------|---------------------------------------------|
-| **Description** | Classic Unit Testing                        |
-| **Copyright**   | 2011 Rubyworks. All rights reserved.        |
-| **License**     | BSD-2-Clause                                |
-| **Website**     | http://rubyworks.github.com/citron          |
+    Citron - Classic Unit Testing
+    2011 (c) Rubyworks (BSD-2-Clause license)
+    All rights expressly reserved.
+    http://rubyworks.github.com/citron
 
 
 ## LICENSES
