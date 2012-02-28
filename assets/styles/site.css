@@ -12,19 +12,19 @@ a:hover { text-decoration: underline; }
 code { color: #222; font-weight: bold; }
   tt { color: #222; font-weight: bold; }
 
-#nav { padding: 5px 10px 10px 10px; text-align: left; color: pink; position: fixed; top: 0; right: 140px; font-size: 0.9em;
+#nav { padding: 5px 10px 10px 10px; text-align: left; color: pink; position: fixed; top: 0; right: 150px; font-size: 0.9em;
        border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 1px solid #ccc;
        border-radius: 0px 0px 10px 10px;
        background: white;
      }
-#nav a { font-size: 160%; line-height: 150%; color: yellow; text-shadow: 1px 1px 1px #111; }
+#nav a { font-size: 160%; line-height: 150%; color: #4e0; text-shadow: 1px 1px 1px #111; }
 #nav a:hover { color: green; text-decoration: none; }
 
 #header { height: 250px; text-align: left; }
 #header h1 { font-size: 100px; margin-bottom: 0; padding: 40px 0 0 0; color: #f7d901; margin-left: -10px; }
 #header h2 { padding: 0 0 0 50px; margin-top: 0; font-weight: normal; }
 
-#main { color: white; padding: 20px 0 30px 0; background: url(../images/skin.jpg) #f7e931; }
+#main { color: white; padding: 20px 0 30px 0; background: url(../images/skin.jpg) #e9f731; }
 #main p { font-weight: bold; font-family: sans-serif; font-size: 1.8em; color: #222; font-weight: bold; text-shadow: 1px 1px white; }
 #main h2 { color: #333333; }
 #main h3 { color: #333333; }
