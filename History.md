@@ -1,5 +1,15 @@
 # Release History
 
+## 0.4.0 / 2012-02-28
+
+Reimplmented with a class-based model. This design is the traditional XUnit
+OOP design, so it is more fitting Citron's design goals.
+
+Changes:
+
+* Reimplement with class-based model.
+
+
 ## 0.3.0 / 2012-02-25
 
 This release cleans up the code, deprecates the complex Before and After

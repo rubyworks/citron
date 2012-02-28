@@ -1,6 +1,7 @@
 ---
 source:
 - PROFILE
+- Profile
 authors:
 - name: Thomas Sawyer
   email: transfire@gmail.com
@@ -39,7 +40,7 @@ load_path:
 revision: 0
 name: citron
 title: Citron
-version: 0.3.0
+version: 0.4.0
 summary: Classic Unit-style Test Framework
 description: Citron is a unit testing framework with a classic test-case/test-unit
   style.

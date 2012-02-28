@@ -1,6 +1,5 @@
 # COPYRIGHT
 
-
 ## NOTICES
 
 ### Citron
@@ -9,7 +8,6 @@
     2011 (c) Rubyworks (BSD-2-Clause license)
     All rights expressly reserved.
     http://rubyworks.github.com/citron
-
 
 ## LICENSES
 
