@@ -28,8 +28,7 @@ so those will be installed as well if they are not already.
 ## Instruction
 
 Citon tests are written as a collection of testcase and test blocks.
-
-Here is a fun example, `test/test_beatit.rb`:
+Here is a fun example. We'll call the test file `test/test_beatit.rb`:
 
 ```ruby
     TestCase "Show them how to Beat It" do
@@ -61,6 +60,10 @@ Here is a fun example, `test/test_beatit.rb`:
 
     end
 ```
+
+Citron doesn't dictate the assertions system you use. In the above example, we are using
+the [A.E.](http://rubyworks.github.com/ae) assertion framework. You can use any [BRASS](http://rubyworks.github.com)
+compliant system you prefer.
 
 Citron is built on top of [RubyTest](http://rubyworks.github.com/rubytest).
 Jump over to its website to learn how to run tests and setup test run profiles.
