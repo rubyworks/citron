@@ -1,7 +1,6 @@
 Citron - Classic Unit Testing
 
-Copyright (c) 2011 Rubyworks.
-Licensed  (s) BSD-2-Clause
+Copyright 2011 Rubyworks (BSD-2-Clause)
 
 All rights are expressly reserved.
 
