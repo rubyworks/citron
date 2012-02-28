@@ -34,6 +34,9 @@ repositories:
 resources:
   home: http://rubyworks.github.com/citron
   code: http://github.com/rubyworks/citron
+  bugs: http://github.com/rubyworks/citron/issues
+  chat: irc://chat.us.freenode.net/rubyworks
+  mail: http://groups.google.com/groups/rubyworks-mailinglist
 extra: {}
 load_path:
 - lib
@@ -41,8 +44,8 @@ revision: 0
 name: citron
 title: Citron
 version: 0.4.0
-summary: Classic Unit-style Test Framework
-description: Citron is a unit testing framework with a classic test-case/test-unit
-  style.
+summary: Classic Unit Testing
+description: Citron is a classical unit testing framework with a developer freindly
+  DSL, runs on top of RubyTest and is BRASS compliant.
 organization: RubyWorks
 date: '2012-02-25'
