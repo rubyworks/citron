@@ -124,6 +124,10 @@ module Citron
 
       alias :context :Context
 
+      # TODO: Alias context as concern ?
+      #alias :concern, :Context
+      #alias :Concern, :Context
+
       #
       # Create a test, or a parameterized test.
       #
